@@ -1,0 +1,369 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet"
+          href="css/treesBlog.css"
+          media="screen" />
+    <meta name="google-signin-client_id" content="1096637628570-m2evcr3kmbbkk9714nvrah7u7hcghsn3.apps.googleusercontent.com">
+
+    <title>Manchester United</title>
+</head>
+
+<body>
+
+<header>
+    <header>
+        <div class="black"></div>
+        <div class="uvod" id="uvod">
+            <div class="text-uvod">
+                <nav>
+                    <button class="nula" onclick="window.location.href = 'index.html' ;">
+                        Domov
+                    </button>
+                    <button class="druhe" onclick="window.location.href = '#players' ;">
+                        A-team
+                    </button>
+                    <button class="prve" onclick="window.location.href = '#History' ;">
+                        História
+                    </button>
+                    <button class="tretie" onclick="window.location.href = '#Fotogalery' ;">
+                        Fotogaléria
+                    </button>
+                    <button class="stvrte" onclick="window.location.href= '#footer' ;">
+                        Kontakt
+                    </button>
+                </nav>
+
+                <div class="svg-wrapper">
+                    <svg class="svg" height="60" width="462">
+                        <rect class="shape" height="60" width="462" />
+                    </svg>
+                    <div class="text"><h1> Manchester United</h1></div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <aside id="googleSignIn">
+        <div id="SignInButton"></div>
+        <div id="SignedIn">
+            Ste prihlásený ako (You are signed in as) <span id="userName"></span> <button onclick="signOut()">Odhlásiť sa / Sign Out</button>
+        </div>
+    </aside>
+
+<div class="menu">
+    <button id="menuTitle" onclick="displayOrHideMenu()">Menu</button>
+
+    <nav id="menuIts" class="menu mnHide">
+            <a href="#welcome">Welcome!</a>
+            <a href="#articles/1/10">Articles</a>
+            <a href="#opinions">Visitor opinions</a>
+            <a href="#addOpinion">Add your opinion</a>
+            <a href="#artInsert">Add article</a>
+    </nav>
+
+</div>
+
+</header>
+
+<main id="router-view">
+</main>
+
+<footer>
+    <p class="name" id="footer">Erik Švenk</p>
+    <p class="mail">svenky.svenk@gmail.com</p>
+    <p class="mail">erik.svenk@student.tuke.sk</p>
+</footer>
+
+<!--Templates for html, dynamically inserted by the router -->
+
+<script id="template-welcome" type="text/template">
+    <article>
+        <h2>Welcome!</h2>
+
+        <p >Manchester United je anglický futbalový klub hrajúci Premier League. Je to najúspešnejší anglický klub vôbec v celej histórii. Jeho domácim štadiónom je Old Trafford v severoanglickom Manchesteri. Klub bol založený pod menom Newton Heath LYR F.C. v roku 1878 a do ligy vstúpil v roku 1892. V najvyššej anglickej súťaži hráva od roku 1938 s výnimkou sezóny 1974/75. Priemerná návšteva na štadióne je aj napriek tomu najvyššia v celom Anglicku od sezóny 1964/65. Má fanúšikov po celom svete.</p>
+
+    </article>
+</script>
+
+<script id="template-articles" type="text/template">
+    <h2>Main Content</h2>
+    <p>
+        Displaying page {{currPage}} of {{pageCount}} pages.
+    </p>
+
+
+    <article class="container">
+        {{#articleList}}
+        {{#.}}
+        <h2><a href="{{detailLink}}">{{title}}</a></h2>
+        <p>
+            by {{author}}
+        </p>
+        {{/.}}
+        {{/articleList}}
+    </article>
+
+
+    {{#prevPage}}
+    <a href="#articles/{{prevPage}}/{{pageCount}}"><< Previous page</a>
+    {{/prevPage}}
+    {{#nextPage}}
+    <a href="#articles/{{nextPage}}/{{pageCount}}">Next page >></a>
+    {{/nextPage}}
+</script>
+
+<script id="template-articles-error" type="text/template">
+
+    <article>
+        <h2>Articles acquisition failed</h2>
+        <p>
+            {{errMessage}}
+        </p>
+    </article>
+    <footer  class="menuLink"><a href="#menuTitle">Back to the menu</a></footer>
+
+</script>
+
+<script id="template-opinions" type="text/template">
+
+    <article id="artOpinions">
+
+
+        <div id="nazory" class="text-zarovnanie">
+            <h4>Nazory od ludi</h4>
+            {{#.}}
+            <section class="opinionBox">
+                <h3>Meno: {{ name }}  </h3>
+                <p>Dátum:<i>{{ created }}</i></p>
+                <p>Email: {{mail}}</p>
+                <p>Hodnotenie: {{rating}}</p>
+                <p>Odporučanie: {{recommendation}}</p>
+                <p>Kľúčové slovo: {{keyWord}}</p>
+                <p>Komentár: {{comment}} </p>
+            </section>
+            {{/.}}
+            {{^.}}
+            <section>
+                Ziadne nazory neboli pridane.
+            </section>
+            {{/.}}
+            <div id="opinionsContainer"></div>
+
+            <button type="button" class="subrestlac" onclick="return vymazatNazory(event)">Vymaz nazory</button>
+
+        </div>
+    </article>
+</script>
+
+<script id="template-addOpinion" type="text/template">
+    <article  id="artOpnFrm">
+        <h2>Your Opinion</h2>
+        <p>
+            Please, use the form below to state your opinion about this page.
+        </p>
+        <form id="formular" onsubmit="return potvrdenieFormular(event)">
+
+            <label for="nameElm">Meno:</label>
+            <span class="resizeable">
+            <input type="text" id="nameElm" size="20" minlength="3" maxlength="10" placeholder="Zadaj svoje meno" required/>
+            </span>
+            <br><br>
+
+            <label for="emailElm">Email:</label>
+            <input type="email" id="emailElm" size="20" maxlength="30" placeholder="Zadaj svoj email" required/>
+            <br><br>
+
+            <p>Ako sa ti páči stránka:</p>
+
+            <div>
+                <input type="radio" id="dobra" name="drone" value="dobra">
+                <label for="dobra">Dobrá</label>
+            </div>
+
+            <div>
+                <input type="radio" id="normalna" name="drone" value="normalna" checked>
+                <label for="normalna">Normálna</label>
+            </div>
+
+            <div>
+                <input type="radio" id="zla" name="drone" value="zla">
+                <label for="zla">Zlá</label>
+            </div>
+            <br><br>
+
+            <div class="preference">
+                <label for="otazka">Odporúčil by si niekomu túto stránku ?</label>
+                <input type="checkbox" name="otazka" id="otazka">
+            </div>
+            <br><br>
+
+            <label for="opnElm">Komentár:</label>
+            <textarea name="comment" id="opnElm" cols="50" rows="3" placeholder="Zadaj komentár" required></textarea>
+            <br><br>
+
+            <label for="key">Vyber kľúčové slovo stránky:</label>
+
+            <select id="key">
+                <option value="">--kľúčové slovo stránky--</option>
+                <option value="Futbal">Futbal</option>
+                <option value="Anglicko">Anglicko</option>
+                <option value="History">História</option>
+                <option value="stranka">Stránka</option>
+            </select>
+            <br><br>
+
+            <button type="submit">Poslať</button>
+            <button type="reset">Reset</button>
+
+        </form>
+        <footer  class="menuLink"><a href="#menuTitle">Back to the menu</a></footer>
+    </article>
+</script>
+
+<script id="template-article" type="text/template">
+    <article>
+        <h3>{{title}}</h3>
+        <p>
+            by {{author}}
+        </p>
+        {{#imageLink}}
+        <figure>
+            <img src="{{imageLink}}" alt="article figure" />
+        </figure>
+        {{/imageLink}}
+        <div>{{{content}}}</div>
+        <p>
+            Keywords:
+            {{tags}}
+        </p>
+
+        <h3>Comments</h3>
+        {{#comments}}
+        <div class="comment">
+            by <u>{{author}}</u>
+            <br>
+            {{{text}}}
+        </div>
+        {{/comments}}
+        {{^comments}}
+        Žiadne komentáre.
+        {{/comments}}
+        <br>
+        <div id="addCommentDiv">
+            <br>
+            <form id="addCommentForm">
+                <div class="addArticleHeader">
+
+                    <h2>Pridať komentár</h2>
+                </div>
+                <div class="artAuthor">
+
+                    <label for="author">Meno:</label>
+                    <br>
+                    <input type="text" name="author" id="commentAuthor" size="50" required="" title="Autor komentára, maximálna dĺžka: 100 znakov (comment author, max. length 100 characters)." maxlength="100" placeholder="napr. Ján Trieska">
+                </div>
+                <div class="artTextArea">
+                    <br>
+                    <label for="content">Komentár:</label>
+                    <br>
+                    <textarea name="content" id="commentAdd" spellcheck="true" lang="sk" cols="50" rows="5" required="" title="Obsah komentára, povinná položka,  môže byť obyčajný text alebo html (Comment content, mandatory item, can be plain text or in HTML)."></textarea>
+                </div>
+                <div class="buttons">
+                    <button type="reset" id="cancelComment" class="artReset" onclick="hideCommentForm()">Cancel</button>
+                    <button type="submit" id="sendComment" class="artSubmit"><a href="{{addCommLink}}">Submit</a></button>
+                </div>
+            </form>
+        </div>
+    </article>
+
+    </article>
+
+    <footer>
+        <a href="{{backLink}}" class="linkAsButton"><< Back</a>
+        <a href="{{editLink}}" class="linkAsButton">Edit</a>
+        <a href="{{deleteLink}}" class="linkAsButton">Delete</a>
+        <a href="#menuTitle" class="linkAsButton">Up to the menu</a>
+    </footer>
+
+</script>
+
+<script id="template-article-form" type="text/template">
+    <article>
+
+        <h2>{{formTitle}}</h2>
+        <br><br>
+
+        <form id="articleForm" onsubmit="return {{formSubmitCall}}">
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" class="black-button" value="{{author}}" size="50" title="Article author, max. length 100 characters." maxlength="100" placeholder="e.g. Ján Trieska" />
+            <br>
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" class="black-button" value="{{title}}" size="50"  maxlength="100" pattern="\S[\S\s]*" required title="Article title, mandatory item, max. length: 100 characters, the first character must not be a space." placeholder="e.g. My story." />
+            <br>
+            <label for="imageLink">Image (url):</label>
+            <input type="url" name="imageLink" id="imageLink" value="{{imageLink}}" size="50" title="Image URL, max. length 100 characters." maxlength="100"/>
+            <br>
+            <label></label><button type="button" id="btShowFileUpload" onclick="showFileUpload()">Upload image</button>
+
+            <fieldset class="added hiddenElm" id="fsetFileUpload">
+                <legend>Image Upload</legend>
+                <input type="file" id="flElm" name="file" accept="image/jpeg, image/png"/>
+                <br />
+                <button type="button" id="btFileUpload" onclick="uploadImg('{{urlBase}}')">Send image to server</button>
+                <button type="button" id="btCancelFileUpload" onclick="cancelFileUpload()">Cancel uploading</button>
+            </fieldset>
+
+
+            <br>
+            <label for="content">Article content:</label>
+            <textarea
+                    class="black-button"
+                    name="content" id="content" spellcheck="true" lang="sk"
+                    cols="50" rows="20" required
+                    title="Article content, mandatory item, can be plain text or in HTML.">{{content}}</textarea>
+            <br>
+            <label for="tags">Keywords:</label>
+            <input  type="text" name="tags" id="tags" value="{{tags}}" size="50"
+                    title="Keyword list, comma separated." placeholder="e.g. village, drama" />
+
+            <br>
+            <br>
+            <button type="reset" class="black-button">
+                Reset Form
+            </button>
+            <button type="submit" class="black-button">
+                {{submitBtTitle}}
+            </button>
+
+        </form>
+
+    </article>
+
+    <footer>
+        <a href="{{backLink}}" class="linkAsButton"><< Back</a>
+        <a href="#menuTitle" class="linkAsButton">Up to the menu</a>
+    </footer>
+</script>
+
+
+    // linky js
+
+<script src="js/mustache.min.js"></script>
+
+<script src="js/mainMenu.js"></script>
+
+<script src="js/addOpinion.js"></script>
+
+<script type="module" src="js/routerInit.js"></script>
+
+<script src="js/handleArticleForms.js"></script>
+
+<script src="js/google.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=startGSingIn" async defer></script>
+
+</body>
+</html>
